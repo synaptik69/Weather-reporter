@@ -19,7 +19,7 @@ function App() {
     if (run) {
       timer = setInterval(() => {
         setMillis((prevMillis) => {
-          let updatedMillis = prevMillis + 1;
+          let updatedMillis = prevMillis + 2;
           let updatedSeconds = seconds;
           let updatedMinutes = minutes;
 
@@ -38,7 +38,7 @@ function App() {
 
           return updatedMillis;
         });
-      }, 10);
+      }, 20);
     }
 
     return () => {
