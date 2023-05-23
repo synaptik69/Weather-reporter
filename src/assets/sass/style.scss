@@ -35,15 +35,6 @@ body {
   min-height: 100vh
 }
 
-a {
-  color: #d2d5ff;
-  text-decoration: none;
-
-  &:hover {
-    color: #fff
-  }
-}
-
 p {
   margin-top: 25px
 }
@@ -107,7 +98,7 @@ button {
   background: #fff;
   border-radius: 10px;
   color: #000;
-  font-size: 4rem;
+  font-size: 3rem;
   margin: 0 auto 35px;
   max-width: 500px
 }

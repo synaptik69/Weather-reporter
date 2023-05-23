@@ -8,59 +8,74 @@ function App() {
   const [run, setRun] = useState(false);
   const [stopDisabled, setStopDisabled] = useState(true);
   const [resetDisabled, setResetDisabled] = useState(true);
-  const setPauses = useState([]);
   const [lastPause, setLastPause] = useState(null);
+  const [animationFrameId, setAnimationFrameId] = useState(null);
+  const [prevTime, setPrevTime] = useState(null);
 
   const zeroPad = (value) => (value < 10 ? `0${value}` : value);
 
+  const updateTimer = (currentTime) => {
+    if (!prevTime) {
+      setPrevTime(currentTime);
+    }
+
+    const deltaTime = currentTime - prevTime;
+
+    let updatedMillis = millis + deltaTime;
+    let updatedSeconds = seconds;
+    let updatedMinutes = minutes;
+
+    if (updatedMillis >= 1000) {
+      updatedSeconds += Math.floor(updatedMillis / 1000);
+      updatedMillis %= 1000;
+    }
+    if (updatedSeconds >= 60) {
+      updatedMinutes += Math.floor(updatedSeconds / 60);
+      updatedSeconds %= 60;
+    }
+
+    setSeconds(updatedSeconds);
+    setMinutes(updatedMinutes);
+    setMillis(Math.round(updatedMillis));
+    setPrevTime(currentTime);
+    setAnimationFrameId(requestAnimationFrame(updateTimer));
+  };
+
   useEffect(() => {
-    let timer = null;
-
     if (run) {
-      timer = setInterval(() => {
-        setMillis((prevMillis) => {
-          let updatedMillis = prevMillis + 2;
-          let updatedSeconds = seconds;
-          let updatedMinutes = minutes;
-
-          if (updatedMillis >= 100) {
-            updatedSeconds += Math.floor(updatedMillis / 100);
-            updatedMillis %= 100;
-          }
-
-          if (updatedSeconds >= 60) {
-            updatedMinutes += Math.floor(updatedSeconds / 60);
-            updatedSeconds %= 60;
-          }
-
-          setSeconds(updatedSeconds);
-          setMinutes(updatedMinutes);
-
-          return updatedMillis;
-        });
-      }, 20);
+      setAnimationFrameId(requestAnimationFrame(updateTimer));
+    } else {
+      cancelAnimationFrame(animationFrameId);
+      setPrevTime(null);
     }
 
     return () => {
-      clearInterval(timer);
+      cancelAnimationFrame(animationFrameId);
     };
-  }, [run, minutes, seconds]);
+  }, [run]);
 
   const handleStartClick = () => {
-    setRun(true);
-    setStopDisabled(false);
-    setResetDisabled(true);
+    if (!run) {
+      setRun(true);
+      setStopDisabled(false);
+      setResetDisabled(true);
+      setPrevTime(performance.now());
+    }
   };
 
   const handleStopClick = () => {
-    setRun(false);
-    setStopDisabled(true);
-    setResetDisabled(false);
-    setLastPause({
-      minutes,
-      seconds,
-      millis,
-    });
+    if (run) {
+      setRun(false);
+      setStopDisabled(true);
+      setResetDisabled(false);
+      setLastPause({
+        minutes,
+        seconds,
+        millis,
+      });
+      cancelAnimationFrame(animationFrameId);
+      setPrevTime(null);
+    }
   };
 
   const handleResetClick = () => {
@@ -69,8 +84,9 @@ function App() {
     setMillis(0);
     setStopDisabled(true);
     setResetDisabled(true);
-    setPauses([]);
     setLastPause(null);
+    cancelAnimationFrame(animationFrameId);
+    setPrevTime(null);
   };
 
   return (
