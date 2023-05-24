@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './assets/css/style.css';
 
 function App() {
@@ -6,13 +6,46 @@ function App() {
   const [seconds, setSeconds] = useState(0);
   const [millis, setMillis] = useState(0);
   const [run, setRun] = useState(false);
-  const [stopDisabled, setStopDisabled] = useState(true);
-  const [resetDisabled, setResetDisabled] = useState(true);
   const [lastPause, setLastPause] = useState(null);
-  const [animationFrameId, setAnimationFrameId] = useState(null);
   const [prevTime, setPrevTime] = useState(null);
+  const animationFrameId = useState(null);
+  const animationFrameRef = useRef(null);
 
   const zeroPad = (value) => (value < 10 ? `0${value}` : value);
+
+  const handleStartClick = () => {
+    if (!run) {
+      setRun(true);
+      setPrevTime(performance.now());
+    }
+  };
+
+  const handleStopClick = () => {
+    if (run) {
+      setRun(false);
+      setLastPause({
+        minutes,
+        seconds,
+        millis,
+      });
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      setPrevTime(null);
+    }
+  };
+
+  const handleResetClick = () => {
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+    }
+    setMinutes(0);
+    setSeconds(0);
+    setMillis(0);
+    setLastPause(null);
+    setRun(false);
+    setPrevTime(null);
+  };
 
   const updateTimer = (currentTime) => {
     if (!prevTime) {
@@ -33,61 +66,30 @@ function App() {
       updatedMinutes += Math.floor(updatedSeconds / 60);
       updatedSeconds %= 60;
     }
+    if (updatedMinutes >= 60) {
+      handleStopClick();
+      return;
+    }
 
     setSeconds(updatedSeconds);
     setMinutes(updatedMinutes);
     setMillis(Math.round(updatedMillis));
     setPrevTime(currentTime);
-    setAnimationFrameId(requestAnimationFrame(updateTimer));
+    animationFrameRef.current = requestAnimationFrame(updateTimer);
   };
 
   useEffect(() => {
     if (run) {
-      setAnimationFrameId(requestAnimationFrame(updateTimer));
+      animationFrameRef.current = requestAnimationFrame(updateTimer);
     } else {
-      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(animationFrameRef.current);
       setPrevTime(null);
     }
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(animationFrameRef.current);
     };
   }, [run]);
-
-  const handleStartClick = () => {
-    if (!run) {
-      setRun(true);
-      setStopDisabled(false);
-      setResetDisabled(true);
-      setPrevTime(performance.now());
-    }
-  };
-
-  const handleStopClick = () => {
-    if (run) {
-      setRun(false);
-      setStopDisabled(true);
-      setResetDisabled(false);
-      setLastPause({
-        minutes,
-        seconds,
-        millis,
-      });
-      cancelAnimationFrame(animationFrameId);
-      setPrevTime(null);
-    }
-  };
-
-  const handleResetClick = () => {
-    setMinutes(0);
-    setSeconds(0);
-    setMillis(0);
-    setStopDisabled(true);
-    setResetDisabled(true);
-    setLastPause(null);
-    cancelAnimationFrame(animationFrameId);
-    setPrevTime(null);
-  };
 
   return (
     <div className="wrapper">
@@ -110,21 +112,18 @@ function App() {
       <div className="actions">
         <button
           type="button"
-          className={`btn start ${run ? 'disabled' : ''}`}
           onClick={handleStartClick}
         >
           START
         </button>
         <button
           type="button"
-          className={`btn stop ${stopDisabled ? 'disabled' : ''}`}
           onClick={handleStopClick}
         >
           STOP
         </button>
         <button
           type="button"
-          className={`btn reset ${resetDisabled ? '' : 'disabled'}`}
           onClick={handleResetClick}
         >
           RESET
