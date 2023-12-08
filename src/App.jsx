@@ -28,17 +28,13 @@ function App() {
         seconds,
         millis,
       });
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
       setPrevTime(null);
     }
   };
 
   const handleResetClick = () => {
-    if (animationFrameId) {
-      cancelAnimationFrame(animationFrameId);
-    }
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
     setMinutes(0);
     setSeconds(0);
     setMillis(0);
@@ -48,9 +44,7 @@ function App() {
   };
 
   const updateTimer = (currentTime) => {
-    if (!prevTime) {
-      setPrevTime(currentTime);
-    }
+    if (!prevTime) setPrevTime(currentTime);
 
     const deltaTime = currentTime - prevTime;
 
@@ -79,16 +73,13 @@ function App() {
   };
 
   useEffect(() => {
-    if (run) {
-      animationFrameRef.current = requestAnimationFrame(updateTimer);
-    } else {
+    if (run) animationFrameRef.current = requestAnimationFrame(updateTimer);
+    else {
       cancelAnimationFrame(animationFrameRef.current);
       setPrevTime(null);
     }
 
-    return () => {
-      cancelAnimationFrame(animationFrameRef.current);
-    };
+    return () => cancelAnimationFrame(animationFrameRef.current);
   }, [run]);
 
   return (
