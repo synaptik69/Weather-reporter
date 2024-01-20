@@ -3,7 +3,7 @@
   font-family: OpenSans;
   font-style: normal;
   font-weight: 400;
-  src: url(/assets/fonts/OpenSans.woff2) format("woff2")
+  src: url(/assets/fonts/OpenSans.woff2) format("woff2");
 }
 
 @font-face {
@@ -11,19 +11,19 @@
   font-family: OpenSans;
   font-style: normal;
   font-weight: 700;
-  src: url(/assets/fonts/OpenSans-700.woff2) format("woff2")
+  src: url(/assets/fonts/OpenSans-700.woff2) format("woff2");
 }
 
 html {
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   background: #6570ff;
   font-family: OpenSans;
   -webkit-user-select: none;
-  user-select: none
+  user-select: none;
 }
 
 * {
-  box-sizing: border-box
+  box-sizing: border-box;
 }
 
 body {
@@ -32,11 +32,11 @@ body {
   display: flex;
   justify-content: center;
   margin: 0 1rem;
-  min-height: 100vh
+  min-height: 100dvh;
 }
 
 p {
-  margin-top: 25px
+  margin-top: 25px;
 }
 
 .retour {
@@ -46,18 +46,18 @@ p {
   font-size: 2rem;
   justify-content: center;
   margin: auto;
-  text-decoration: none
+  text-decoration: none;
 }
 
 .wrapper {
   background: #424bd1;
   border-radius: 10px;
-  box-shadow: 8px 8px 20px rgba(0,0,0,.2);
+  box-shadow: 8px 8px 20px rgba(0, 0, 0, .2);
   margin: 1rem 0;
   max-width: 95vw;
   padding: 30px;
   text-align: center;
-  width: 500px
+  width: 500px;
 }
 
 h1 {
@@ -67,11 +67,11 @@ h1 {
   padding: 1rem;
   line-height: 0;
   font-weight: 400;
-  text-align: right
+  text-align: right;
 }
 
 .dernierePause {
-  min-height: 25px
+  min-height: 25px;
 }
 
 button {
@@ -90,7 +90,7 @@ button {
 
   &:hover {
     background: #6570ff;
-    color: #fff
+    color: #fff;
   }
 }
 
@@ -100,5 +100,5 @@ button {
   color: #000;
   font-size: 3rem;
   margin: 0 auto 35px;
-  max-width: 500px
+  max-width: 500px;
 }
