@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './assets/css/style.css';
+import './assets/css/style.min.css';
 
 function App() {
   const [minutes, setMinutes] = useState(0);
